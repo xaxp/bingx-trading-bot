@@ -9,13 +9,15 @@ const PORT = process.env.PORT || 3000;
 // BingX API klíče
 const API_KEY = process.env.BINGX_API_KEY;
 const API_SECRET = process.env.BINGX_API_SECRET;
-const BASE_URL = 'https://open-api.bingx.com/openApi';
+const BASE_URL = 'https://open-api.bingx.com';
 
 // Funkce pro získání aktuální ceny BTC/USDT
 app.get('/price', async (req, res) => {
     try {
         console.log("Fetching BTC price from BingX API...");
-        const response = await axios.get(`${BASE_URL}/market/ticker?symbol=BTC-USDT`);
+        const response = await axios.get(`${BASE_URL}/openApi/spot/v1/ticker/24hr`, {
+            params: { symbol: 'BTC-USDT' }
+        });
         console.log("API Response:", response.data);
         res.json(response.data);
     } catch (error) {
@@ -26,6 +28,7 @@ app.get('/price', async (req, res) => {
         });
     }
 });
+
 
 // Funkce pro vytvoření podpisu API requestu
 const createSignature = (params) => {
