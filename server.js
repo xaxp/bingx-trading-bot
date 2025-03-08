@@ -9,15 +9,21 @@ const PORT = process.env.PORT || 3000;
 // BingX API klíče
 const API_KEY = process.env.BINGX_API_KEY;
 const API_SECRET = process.env.BINGX_API_SECRET;
-const BASE_URL = 'https://api.bingx.com/api/v1';
+const BASE_URL = 'https://demo-api.bingx.com/api/v1';
 
 // Funkce pro získání aktuální ceny BTC/USDT
 app.get('/price', async (req, res) => {
     try {
+        console.log("Fetching BTC price from BingX API...");
         const response = await axios.get(`${BASE_URL}/market/ticker?symbol=BTC-USDT`);
+        console.log("API Response:", response.data);
         res.json(response.data);
     } catch (error) {
-        res.status(500).json({ error: 'Chyba při načítání ceny BTC' });
+        console.error("BingX API Error:", error.response ? error.response.data : error.message);
+        res.status(500).json({ 
+            error: 'Chyba při načítání ceny BTC', 
+            details: error.response ? error.response.data : error.message 
+        });
     }
 });
 
@@ -27,15 +33,16 @@ const createSignature = (params) => {
     return crypto.createHmac('sha256', API_SECRET).update(query).digest('hex');
 };
 
-// Funkce pro vytvoření testovací objednávky
+// Funkce pro vytvoření bezpečné testovací objednávky s minimální velikostí
 app.post('/order', async (req, res) => {
     try {
         const params = {
             symbol: 'BTC-USDT',
             side: 'BUY',
             type: 'LIMIT',
-            quantity: 0.01,
-            price: 50000,
+            quantity: 0.0001, // Minimální možná velikost obchodu
+            price: 10000, // Nízká cena pro testovací účely
+            leverage: 1, // Nejnižší možná páka
             timestamp: Date.now()
         };
         params.signature = createSignature(params);
@@ -46,7 +53,8 @@ app.post('/order', async (req, res) => {
         });
         res.json(response.data);
     } catch (error) {
-        res.status(500).json({ error: 'Chyba při vytváření objednávky' });
+        console.error("BingX API Order Error:", error.response ? error.response.data : error.message);
+        res.status(500).json({ error: 'Chyba při vytváření objednávky', details: error.response ? error.response.data : error.message });
     }
 });
 
