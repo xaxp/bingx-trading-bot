@@ -1,0 +1,13 @@
+{
+  "name": "bingx-trading-bot",
+  "version": "1.0.0",
+  "description": "Automatický trading bot pro BingX",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "dotenv": "^16.0.3"
+  }
+}
