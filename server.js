@@ -11,7 +11,6 @@ const API_KEY = process.env.BINGX_API_KEY;
 const API_SECRET = process.env.BINGX_API_SECRET;
 const BASE_URL = 'https://open-api.bingx.com/openApi';
 
-
 // Funkce pro získání aktuální ceny BTC/USDT
 app.get('/price', async (req, res) => {
     try {
